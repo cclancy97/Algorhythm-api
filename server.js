@@ -7,6 +7,8 @@ const cors = require('cors')
 // require route files
 const exampleRoutes = require('./app/routes/example_routes')
 const userRoutes = require('./app/routes/user_routes')
+const postRoutes = require('./app/routes/post_routes')
+const commentRoutes = require('./app/routes/comment_routes')
 
 // require error handling middleware
 const errorHandler = require('./lib/error_handler')
@@ -60,6 +62,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // register route files
 app.use(exampleRoutes)
 app.use(userRoutes)
+app.use(postRoutes)
+app.use(commentRoutes)
 
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
