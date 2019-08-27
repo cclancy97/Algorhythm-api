@@ -18,14 +18,7 @@ const router = express.Router()
 router.get('/posts', (req, res, next) => {
   Post.find()
     .populate('owner')
-    .populate({
-      path: 'comment',
-      model: 'Comment',
-      populate: {
-        path: 'owner',
-        model: 'User'
-      }
-    })
+    .populate('comments')
     .then(posts => {
       return posts.map(post => post.toObject())
     })

@@ -22,38 +22,35 @@ router.get('/comments', (req, res, next) => {
     .catch(next)
 })
 
+// CREATE
+// POST /comments
 router.post('/comments', requireToken, (req, res, next) => {
   // set owner of new comment to be current user
   req.body.comment.owner = req.user.id
-  let comment = req.body.comment
-  Comment.create(comment)
-    // respond to succesful `create` with status 201 and JSON of new "comment"
-    .then(comment => {
-      let id = comment._id
-      let postID = comment.post
-      Post.findById(postID)
-        .then(handle404)
-        .then(foundPost => {
-          foundPost.comment.push(id)
-          let post = foundPost
-          return foundPost.update(post)
-        })
-        .then(() => {
-          res.status(200).json({comment: comment.toObject()})
-        })
 
+  Comment.create(req.body.comment)
+    .then(comment => {
+      // Find the post with matching post id on comment
+      Post.findById(comment.post)
+        .then(handle404)
+        .then(post => {
+          // Push new comment to array on posts
+          post.comments.push(comment._id)
+          // Update the post so the new comment stays in the array
+          return post.update(post)
+        })
+        // respond to succesful `create` with status 201 and JSON of new "comment"
+        .then(() => {
+          res.status(201).json({ comment: comment.toObject() })
+        })
         .catch(next)
     })
-
-    .catch(next)
 })
-// GET USERS SPECIFIC POSTS WHILE LOGGED IN
-// /comments/5a7db6c74d55bc51bdf39793
-router.get('/comments-user/:id', requireToken, (req, res, next) => {
+// SHOW
+// GET /comments/5a7db6c74d55bc51bdf39793
+router.get('/comments/:id', (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
-
   Comment.findById(req.params.id)
-    .populate('owner')
     .then(handle404)
     // if `findById` is succesful, respond with 200 and "comment" JSON
     .then(comment => res.status(200).json({ comment: comment.toObject() }))
