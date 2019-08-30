@@ -38,4 +38,4 @@ DELETE | /comments/:id
 
 ---
 ### _ERD:_
-  - ![ERD](https://i.imgur.com/rQoKth3.jpg "ERD")
+  ![ERD](https://i.imgur.com/rQoKth3.jpg "ERD")
